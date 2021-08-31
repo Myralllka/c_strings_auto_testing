@@ -1,0 +1,90 @@
+cmake_minimum_required(VERSION 3.16)
+
+# CHANGE YOUR PROJECT NAME
+set(PROJECT_NAME c_string_tests)
+project(${PROJECT_NAME} C CXX)
+
+set(LIBN my_c_string)
+
+# Options
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors." ON)
+option(ENABLE_PVS_STUDIO "Check using command-line PVS-Studio." ON)
+# ENABLE_SANITIZERS is the option for the test builds! Do not use it in the production builds.
+
+## PVS Studio
+if (ENABLE_PVS_STUDIO)
+    include(cmake/PVS-Studio.cmake)
+    SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif ()
+
+# Warnings
+if (MSVC)
+    # warning level 4 and all warnings as errors
+    add_compile_options(/W4 /WX)
+else ()
+    # lots of warnings and all warnings as errors
+    add_compile_options(-Wall -Wextra -pedantic -Werror -Werror=vla -Wno-overflow)
+endif ()
+
+# Include fixed CMake configuration
+include(cmake/config.cmake)
+
+#####################################################################################################
+# 1) set up gtests. This block of code is taken from https://crascit.com/2015/07/25/cmake-gtest/
+# Download and unpack googletest at configure time
+configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download"
+        )
+execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download"
+        )
+
+# Prevent GoogleTest from overriding our compiler/linker options
+# when building with Visual Studio
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# Add googletest directly to our build. This adds the following targets:
+# gtest, gtest_main, gmock and gmock_main
+add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src"
+        "${CMAKE_BINARY_DIR}/googletest-build"
+        )
+
+#####################################################################################################
+# 2) build my_str library
+add_library(
+        ${LIBN} SHARED
+        ${CMAKE_SOURCE_DIR}/c_str_lib/c_string_lib.c
+        ${CMAKE_SOURCE_DIR}/c_str_lib/c_string_lib.h
+)
+target_include_directories(${LIBN} PUBLIC ${CMAKE_SOURCE_DIR}/c_str_lib)
+
+#####################################################################################################
+# 3) build tests
+add_executable(gtester ${CMAKE_SOURCE_DIR}/google_tests/main.cpp ${CMAKE_SOURCE_DIR}/google_tests/Tests/tests.cpp)
+target_compile_definitions(gtester PUBLIC FILE_DIR="${CMAKE_SOURCE_DIR}/google_tests/test_files")
+target_link_libraries(gtester ${LIBN} gtest gtest_main)
+
+###################################
+# set output directory (bin)
+set_target_properties(${LIBN} gtester
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set_target_properties(${LIBN}
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib_bin
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib_bin)
+
+if (ENABLE_PVS_STUDIO)
+    # create own target for library
+    pvs_studio_add_target(
+            TARGET ${LIBN}.analize ALL
+            ANALYZE ${LIBN}
+            #TARGET gtester.analyze ALL
+            #ANALYZE gtester
+            OUTPUT FORMAT errorfile
+            MODE GA:1,2,3 OP:1,2,3 GA:1,2,3 OP:1,2,3 64:1,2,3 CS:1,2,3 MISRA:1,2,3
+            LOG ${PROJECT_NAME}.err)
+else ()
+    message("Consider checking using PVS-Studio with `cmake -DENABLE_PVS_STUDIO=ON <.....>` or Windows GUI application.")
+endif ()

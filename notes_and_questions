@@ -1,0 +1,9 @@
+### free method (SOLVED)
+- should it be like
+```
+free(str->data);
+str->data=NULL;
+```
+or without last line?
+
+### next
