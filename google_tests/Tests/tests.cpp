@@ -12,7 +12,7 @@
 
 
 extern "C" {
-#include "c_string_lib.h"
+#include "c_string.h"
 #include <string.h>
 #include <stdint.h>
 }
