@@ -9,7 +9,6 @@
 #endif
 
 #pragma GCC diagnostic ignored "-Wformat-zero-length"
-//#pragma clang diagnostic ignored "-Wformat-zero-length"
 
 
 extern "C" {
@@ -1097,4 +1096,3 @@ TEST_F(ClassDeclaration, my_str_write) {
 }
 
 #pragma GCC diagnostic warning "-Wformat-zero-length"
-//#pragma clang diagnostic warning "-Wformat-zero-length"
