@@ -768,39 +768,44 @@ TEST_F(ClassDeclaration, my_str_find) {
 }
 
 TEST_F(ClassDeclaration, my_str_cmp) {
-
     // equal size normal strings
     my_str_from_cstr(&string1, "hello", 20);
     my_str_from_cstr(&string2, "hellw", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
+    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
 
     // one is longer
     my_str_from_cstr(&string1, "aaaa", 20);
     my_str_from_cstr(&string2, "aab", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
+    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
 
     // one symbol strings
     my_str_from_cstr(&string1, "a", 20);
     my_str_from_cstr(&string2, "b", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
+    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
 
     // one is empty
     my_str_from_cstr(&string1, "a", 20);
     my_str_from_cstr(&string2, "", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
+
     my_str_from_cstr(&string1, "", 20);
     my_str_from_cstr(&string2, "b", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
+    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
 
     // equal
     my_str_from_cstr(&string1, "hello, world", 20);
     my_str_from_cstr(&string2, "hello, world", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
 
     // empty and equal
     my_str_from_cstr(&string1, "", 20);
     my_str_from_cstr(&string2, "", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
+
+    // equal, but one is shorter
+    my_str_from_cstr(&string1, "hello, world", 20);
+    my_str_from_cstr(&string2, "hello, worl", 20);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
 
     // one of strings is NULL
     ASSERT_EQ(my_str_cmp(NULL, &string2), NULL_PTR_ERR);
@@ -811,37 +816,43 @@ TEST_F(ClassDeclaration, my_str_cmp) {
 TEST_F(ClassDeclaration, my_str_cmp_cstr) {
     // equal size normal strings
     my_str_from_cstr(&string1, "helw", 20);
-    char c_string[20] = "hela";
-    int ercode = my_str_cmp_cstr(&string1, c_string);
-    ASSERT_EQ(ercode, -1);
+    const char *c_string = "hela";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 1);
 
     // one is longer
     my_str_from_cstr(&string1, "123", 20);
-    sprintf(c_string, "13");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
+    c_string = "13";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), -1);
 
     // one symbol strings
     my_str_from_cstr(&string1, "a", 20);
-    sprintf(c_string, "b");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
+    c_string = "b";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), -1);
 
     // one is empty
     my_str_from_cstr(&string1, "a", 20);
-    sprintf(c_string, "");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
+    c_string = "";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 1);
+
+
     my_str_from_cstr(&string1, "", 20);
-    sprintf(c_string, "b");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
+    c_string = "b";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), -1);
 
     // equal
     my_str_from_cstr(&string1, "aaa", 20);
-    sprintf(c_string, "aaa");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
+    c_string = "aaa";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 0);
 
     // empty and equal
     my_str_from_cstr(&string1, "", 20);
-    sprintf(c_string, "");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
+    c_string = "";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 0);
+
+    // equal, but one is shorter
+    my_str_from_cstr(&string1, "hello, world", 20);
+    c_string = "hello, worl";
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 1);
 
     // one of strings is NULL
     ASSERT_EQ(my_str_cmp_cstr(NULL, c_string), NULL_PTR_ERR);
