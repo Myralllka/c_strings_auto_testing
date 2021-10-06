@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
+#include <string.h>
 
 #ifndef FILE_DIR
 #define FILE_DIR "../google_tests/test_files"
@@ -771,35 +772,35 @@ TEST_F(ClassDeclaration, my_str_cmp) {
     // equal size normal strings
     my_str_from_cstr(&string1, "hello", 20);
     my_str_from_cstr(&string2, "hellw", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
 
     // one is longer
     my_str_from_cstr(&string1, "aaaa", 20);
     my_str_from_cstr(&string2, "aab", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
 
     // one symbol strings
     my_str_from_cstr(&string1, "a", 20);
     my_str_from_cstr(&string2, "b", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
 
     // one is empty
     my_str_from_cstr(&string1, "a", 20);
     my_str_from_cstr(&string2, "", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
     my_str_from_cstr(&string1, "", 20);
     my_str_from_cstr(&string2, "b", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
 
     // equal
     my_str_from_cstr(&string1, "hello, world", 20);
     my_str_from_cstr(&string2, "hello, world", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
 
     // empty and equal
     my_str_from_cstr(&string1, "", 20);
     my_str_from_cstr(&string2, "", 20);
-    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), strcmp(my_str_get_cstr(&string1), my_str_get_cstr(&string2)));
 
     // one of strings is NULL
     ASSERT_EQ(my_str_cmp(NULL, &string2), NULL_PTR_ERR);
@@ -817,30 +818,30 @@ TEST_F(ClassDeclaration, my_str_cmp_cstr) {
     // one is longer
     my_str_from_cstr(&string1, "123", 20);
     sprintf(c_string, "13");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 1);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
 
     // one symbol strings
     my_str_from_cstr(&string1, "a", 20);
     sprintf(c_string, "b");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 1);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
 
     // one is empty
     my_str_from_cstr(&string1, "a", 20);
     sprintf(c_string, "");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 1);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
     my_str_from_cstr(&string1, "", 20);
     sprintf(c_string, "b");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), -1);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
 
     // equal
     my_str_from_cstr(&string1, "aaa", 20);
     sprintf(c_string, "aaa");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 0);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
 
     // empty and equal
     my_str_from_cstr(&string1, "", 20);
     sprintf(c_string, "");
-    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), 0);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, c_string), strcmp(my_str_get_cstr(&string1), c_string));
 
     // one of strings is NULL
     ASSERT_EQ(my_str_cmp_cstr(NULL, c_string), NULL_PTR_ERR);
