@@ -46,6 +46,7 @@ namespace {
         void TearDown() override {
             my_str_free(&string1);
             my_str_free(&string2);
+            my_str_free(&string3);
         }
     };
 
