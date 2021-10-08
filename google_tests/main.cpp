@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include<c_string.h>
+#include "c_string.h"
 }
 
 int main(int argc, char *argv[]){
