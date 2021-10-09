@@ -7,11 +7,8 @@ project(${PROJECT_NAME} C CXX)
 set(LIBN my_c_string)
 
 # Options
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors." ON)
-option(ENABLE_PVS_STUDIO "Check using command-line PVS-Studio." ON)
-
-# Include fixed CMake configuration
-include(cmake/config.cmake)
+set (WARNINGS_AS_ERRORS ON)
+set (ENABLE_PVS_STUDIO OFF)
 
 #####################################################################################################
 # 1) set up gtests. This block of code is taken from https://crascit.com/2015/07/25/cmake-gtest/
@@ -59,3 +56,6 @@ set_target_properties(${LIBN}
         PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib_bin
         ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib_bin)
+
+set (ALL_TARGETS ${LIBN} gtester)
+include(cmake/config.cmake)
