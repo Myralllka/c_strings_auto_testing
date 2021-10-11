@@ -134,6 +134,13 @@ TEST_F(ClassDeclaration, my_str_from_cstr) {
     int from_code = my_str_from_cstr(&string1, "hello, world!", 20);
     ASSERT_EQ(from_code, 0);
 
+    // repeat, but with smaller buffer
+    from_code = my_str_from_cstr(&string1, "a", 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "a");
+    ASSERT_EQ(my_str_size(&string1), 1);
+    ASSERT_EQ(my_str_capacity(&string1), 1);
+    ASSERT_EQ(from_code, 0);
+
     // create from empty c-string
     from_code = my_str_from_cstr(&string1, "", 20);
     ASSERT_TRUE(my_str_empty(&string1));
@@ -310,7 +317,7 @@ TEST_F(ClassDeclaration, my_str_append_c) {
     // Check if the push increases buffer by some factor >= 1.8 (rounding up) when required
     my_str_from_cstr(&string2, test_cstr, 0);
     my_str_append_c(&string2, '!');
-    ASSERT_GE(my_str_capacity(&string2), std::ceil(1.8f * test_c_str_len(test_cstr)));
+    ASSERT_GE(my_str_capacity(&string2), std::ceil(1.8f * (test_c_str_len(test_cstr) + 1)));
 
     // multiple pushbacks
     my_str_from_cstr(&string3, test_cstr, 15);
