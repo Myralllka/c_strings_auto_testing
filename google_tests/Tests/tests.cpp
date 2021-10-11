@@ -1208,7 +1208,7 @@ TEST_F(ClassDeclaration, my_str_write_file) {
 }
 
 TEST_F(ClassDeclaration, my_str_read_file) {
-    my_str_from_cstr(&string1, "hello, \nworld", 20);
+    my_str_from_cstr(&string1, "hello, world", 20);
     char path_to_rfile[500];    // char path_to_rfile[test_c_str_len(FILE_DIR) + 30];
     sprintf(path_to_rfile, "%s%s", FILE_DIR, "/read_file.txt");
 
