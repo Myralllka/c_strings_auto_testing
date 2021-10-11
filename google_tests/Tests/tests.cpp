@@ -317,7 +317,7 @@ TEST_F(ClassDeclaration, my_str_append_c) {
     // Check if the push increases buffer by some factor >= 1.8 (rounding up) when required
     my_str_from_cstr(&string2, test_cstr, 0);
     my_str_append_c(&string2, '!');
-    ASSERT_GE(my_str_capacity(&string2), std::ceil(1.8f * (test_c_str_len(test_cstr) + 1)));
+    ASSERT_GE(my_str_capacity(&string2), std::ceil(1.8f * (test_c_str_len(test_cstr) - 1)));
 
     // multiple pushbacks
     my_str_from_cstr(&string3, test_cstr, 15);
