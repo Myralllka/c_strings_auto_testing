@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 
+set(CMAKE_C_COMPILER /usr/bin/gcc)
 # CHANGE YOUR PROJECT NAME
 set(PROJECT_NAME c_string_tests)
 project(${PROJECT_NAME} C CXX)
 
 set(LIBN my_c_string)
 #set(CMAKE_C_STANDARD 11)
-
+set(CMAKE_BUILD_TYPE Debug)
 # Options
 set(WARNINGS_AS_ERRORS ON)
 set(ENABLE_PVS_STUDIO ON)
