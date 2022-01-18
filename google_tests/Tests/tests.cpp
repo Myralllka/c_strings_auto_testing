@@ -460,7 +460,7 @@ TEST_F(ClassDeclaration, my_str_insert_c) {
     ASSERT_EQ(in_code, 0);
     ASSERT_STREQ(my_str_get_cstr(&string3), "i");
     ASSERT_EQ(my_str_size(&string3), 1);
-    ASSERT_GE(my_str_capacity(&string3), 2);
+    ASSERT_GE(my_str_capacity(&string3), 1);
 
     // next insertion after extension
     in_code = my_str_insert_c(&string3, 'h', 0);
@@ -469,343 +469,343 @@ TEST_F(ClassDeclaration, my_str_insert_c) {
     ASSERT_EQ(my_str_size(&string3), 2);
 }
 
-//TEST_F(ClassDeclaration, my_str_insert) {
-//    my_str_from_cstr(&string1, "herld", 20);
-//    my_str_from_cstr(&string2, "llo, wo", 20);
-//
-//    // normal insert
-//    int in_code = my_str_insert(&string1, &string2, 2);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_EQ(my_str_size(&string2), 7);
-//
-//    // insert at the end of the string
-//    my_str_from_cstr(&string1, "hello, ", 20);
-//    my_str_from_cstr(&string2, "world", 20);
-//    in_code = my_str_insert(&string1, &string2, 7);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_EQ(my_str_size(&string2), 5);
-//
-//    // insert at the start of the string
-//    my_str_from_cstr(&string1, "world", 20);
-//    my_str_from_cstr(&string2, "hello, ", 20);
-//    in_code = my_str_insert(&string1, &string2, 0);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_EQ(my_str_size(&string2), 7);
-//
-//    // insert in the empty string
-//    my_str_clear(&string1);
-//    my_str_from_cstr(&string2, "hello", 20);
-//    in_code = my_str_insert(&string1, &string2, 0);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
-//    ASSERT_EQ(my_str_size(&string1), 5);
-//    ASSERT_EQ(my_str_size(&string2), 5);
-//
-//    // insert empty string
-//    my_str_clear(&string2);
-//    my_str_from_cstr(&string1, "hello", 20);
-//    in_code = my_str_insert(&string1, &string2, 0);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
-//    ASSERT_EQ(my_str_size(&string1), 5);
-//    ASSERT_EQ(my_str_size(&string2), 0);
-//
-//    // insert with extending buffer
-//    my_str_from_cstr(&string2, ", world", 0);
-//    in_code = my_str_insert(&string2, &string1, 0);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "hello, world");
-//    ASSERT_EQ(my_str_size(&string1), 5);
-//    ASSERT_EQ(my_str_size(&string2), 12);
-//
-//    // one of strings is NULL
-//    in_code = my_str_insert(nullptr, &string2, 0);
-//    ASSERT_EQ(in_code, NULL_PTR_ERR);
-//    in_code = my_str_insert(&string1, nullptr, 0);
-//    ASSERT_EQ(in_code, NULL_PTR_ERR);
-//
-//    // bad position
-//    in_code = my_str_insert(&string1, &string2, 20);
-//    ASSERT_EQ(in_code, RANGE_ERR);
-//}
-//
-//TEST_F(ClassDeclaration, my_str_insert_cstr) {
-//    my_str_from_cstr(&string1, "herld", 20);
-//    char c_string[10] = "llo, wo";
-//    char c_string_long[50];
-//
-//    // normal insert
-//    int in_code = my_str_insert_cstr(&string1, c_string, 2);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_EQ(test_c_str_len(c_string), 7);
-//
-//    // insert at the end of the string
-//    my_str_from_cstr(&string1, "hello", 20);
-//    sprintf(c_string, ", world");
-//    in_code = my_str_insert_cstr(&string1, c_string, 5);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_EQ(test_c_str_len(c_string), 7);
-//
-//    // insert at the start of the string
-//    my_str_from_cstr(&string1, "world", 20);
-//    sprintf(c_string, "hello, ");
-//    in_code = my_str_insert_cstr(&string1, c_string, 0);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_EQ(test_c_str_len(c_string), 7);
-//
-//    // insert in the empty string
-//    my_str_clear(&string1);
-//    sprintf(c_string, "hello");
-//    in_code = my_str_insert_cstr(&string1, c_string, 0);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
-//    ASSERT_EQ(my_str_size(&string1), 5);
-//    ASSERT_EQ(test_c_str_len(c_string), 5);
-//
-//    // insert empty string
-//    sprintf(c_string, "");
-//    my_str_from_cstr(&string1, "hello", 20);
-//    in_code = my_str_insert_cstr(&string1, c_string, 0);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
-//    ASSERT_EQ(my_str_size(&string1), 5);
-//    ASSERT_EQ(test_c_str_len(c_string), 0);
-//
-//    //insert with extending buffer
-//    my_str_from_cstr(&string1, "hello, ", 20);
-//    sprintf(c_string_long, "world, how is it going? for me it is just a test");
-//    in_code = my_str_insert_cstr(&string1, c_string_long, 7);
-//    ASSERT_EQ(in_code, 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world, how is it going? for me it is just a test");
-//    ASSERT_EQ(my_str_size(&string1), 55);
-//    ASSERT_EQ(test_c_str_len(c_string_long), 48);
-//
-//    // one of strings is NULL
-//    my_str_from_cstr(&string1, "hello", 20);
-//    in_code = my_str_insert_cstr(nullptr, c_string, 2);
-//    ASSERT_EQ(in_code, NULL_PTR_ERR);
-//    in_code = my_str_insert_cstr(&string1, nullptr, 2);
-//    ASSERT_EQ(in_code, NULL_PTR_ERR);
-//
-//    // bad position
-//    in_code = my_str_insert_cstr(&string1, c_string, 20);
-//    ASSERT_EQ(in_code, RANGE_ERR);
-//}
-//
-//TEST_F(ClassDeclaration, my_str_append) {
-//    my_str_from_cstr(&string1, "hello, ", 20);
-//    my_str_from_cstr(&string2, "world", 20);
-//
-//    // normal append
-//    ASSERT_EQ(my_str_append(&string1, &string2), 0);
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "world");
-//
-//    // append empty string
-//    my_str_clear(&string2);
-//    ASSERT_EQ(my_str_append(&string1, &string2), 0);
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//
-//    // append to empty string
-//    ASSERT_EQ(my_str_append(&string2, &string1), 0);
-//    ASSERT_EQ(my_str_size(&string2), 12);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "hello, world");
-//
-//    // one of the strings is NULL
-//    ASSERT_EQ(my_str_append(nullptr, &string1), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_append(&string2, nullptr), NULL_PTR_ERR);
-//
-//    // append with extending buffer
-//    my_str_from_cstr(&string1, "hello, ", 0);
-//    my_str_from_cstr(&string2, "world, how is it going? for me it is just a test", 60);
-//    ASSERT_EQ(my_str_append(&string1, &string2), 0);
-//    ASSERT_EQ(my_str_size(&string1), 55);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world, how is it going? for me it is just a test");
-//}
-//
-//TEST_F(ClassDeclaration, my_str_append_cstr) {
-//    my_str_from_cstr(&string1, "hello, ", 20);
-//    char c_string[30] = "world";
-//
-//    // normal append
-//    ASSERT_EQ(my_str_append_cstr(&string1, c_string), 0);
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//    ASSERT_STREQ(c_string, "world");
-//
-//    // append empty string
-//    sprintf(c_string, "");
-//    ASSERT_EQ(my_str_append_cstr(&string1, c_string), 0);
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//
-//    // append to empty string
-//    sprintf(c_string, "hello");
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_append_cstr(&string1, c_string), 0);
-//    ASSERT_EQ(my_str_size(&string2), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "");
-//
-//    // one of the strings is NULL
-//    ASSERT_EQ(my_str_append_cstr(nullptr, c_string), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_append_cstr(&string2, nullptr), NULL_PTR_ERR);
-//
-//    // append with extending buffer
-//    my_str_from_cstr(&string1, "hello, ", 0);
-//    ASSERT_EQ(my_str_append_cstr(&string1, "world, how is it going? for me it is just a test"), 0);
-//    ASSERT_EQ(my_str_size(&string1), 55);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world, how is it going? for me it is just a test");
-//}
-//
-//TEST_F(ClassDeclaration, my_str_substr) {
-//    my_str_from_cstr(&string1, "hello, world. My name is Myk0la and today I want to test your lab work!", 80);
-//
-//    // substring inside
-//    ASSERT_EQ(my_str_substr(&string1, &string2, 2, 5), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "llo");
-//    ASSERT_EQ(my_str_size(&string2), 3);
-//
-//    // substring from the start
-//    ASSERT_EQ(my_str_substr(&string1, &string2, 0, 5), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "hello");
-//    ASSERT_EQ(my_str_size(&string2), 5);
-//
-//    // substring to the end, within capacity
-//    ASSERT_EQ(my_str_substr(&string1, &string2, 7, 75), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "world. My name is Myk0la and today I want to test your lab work!");
-//    ASSERT_EQ(my_str_size(&string2), test_c_str_len("world. My name is Myk0la and today "
-//                                                    "I want to test your lab work!"));
-//
-//    // bad boundaries
-//    ASSERT_EQ(my_str_substr(&string1, &string2, 13, 11), RANGE_ERR);
-//
-//    // one of strings is NULL
-//    ASSERT_EQ(my_str_substr(nullptr, &string2, 1, 2), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_substr(&string1, nullptr, 1, 2), NULL_PTR_ERR);
-//
-//    // substring to end, more than capacity
-//    ASSERT_EQ(my_str_substr(&string1, &string2, 7, 90), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "world. My name is Myk0la and today I want to test your lab work!");
-//    ASSERT_EQ(my_str_size(&string2), test_c_str_len("world. My name is Myk0la and today "
-//                                                    "I want to test your lab work!"));
-//
-//    // substring from the punultimate position
-//    ASSERT_EQ(my_str_substr(&string1, &string2, my_str_size(&string1) - 1, 90), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "!");
-//    ASSERT_EQ(my_str_size(&string2), 1);
-//
-//    // beg == end
-//    ASSERT_EQ(my_str_substr(&string1, &string2, 1, 1), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "");
-//
-//    // from empty string
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_substr(&string1, &string2, 0, 10), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "");
-//}
-//
-//TEST_F(ClassDeclaration, my_str_substr_cstr) {
-//
-//    // TODO ! 'to' should be initialized
-//
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//    char c_string[20] = "";
-//
-//    // substring inside
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 2, 5), 0);
-//    ASSERT_STREQ(c_string, "llo");
-//    ASSERT_EQ(test_c_str_len(c_string), 3);
-//
-//    // substring from the start
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 0, 5), 0);
-//    ASSERT_STREQ(c_string, "hello");
-//    ASSERT_EQ(test_c_str_len(c_string), 5);
-//
-//    // substring to end, within capacity
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 7, 14), 0);
-//    ASSERT_STREQ(c_string, "world");
-//    ASSERT_EQ(test_c_str_len(c_string), 5);
-//
-//    // substring to end, greater than capacity
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 7, 25), 0);
-//    ASSERT_STREQ(c_string, "world");
-//    ASSERT_EQ(test_c_str_len(c_string), 5);
-//
-//    // bad boundaries
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 13, 11), RANGE_ERR);
-//    ASSERT_EQ(my_str_size(&string1), 12);
-//
-//    // one ofthe  strings is NULL
-//    ASSERT_EQ(my_str_substr_cstr(nullptr, c_string, 1, 2), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_substr_cstr(&string1, nullptr, 1, 2), NULL_PTR_ERR);
-//
-//    // substring from penultimate position
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 11, 25), 0);
-//    ASSERT_STREQ(c_string, "d");
-//    ASSERT_EQ(test_c_str_len(c_string), 1);
-//
-//    // beg == end
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 1, 1), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "");
-//
-//    // from empty string
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 0, 10), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "");
-//}
-//
-//TEST_F(ClassDeclaration, my_str_erase) {
-//    my_str_from_cstr(&string1, "hello_world", 20);
-//
-//    // erase inside
-//    ASSERT_EQ(my_str_erase(&string1, 5, 8), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hellorld");
-//
-//    // erase from the start
-//    ASSERT_EQ(my_str_erase(&string1, 0, 2), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "llorld");
-//
-//    // erase to the end (out of bounds)
-//    ASSERT_EQ(my_str_erase(&string1, 4, 20), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "llor");
-//
-//    // erase from the end
-//    ASSERT_EQ(my_str_erase(&string1, 3, 6), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "llo");
-//
-//    // bad boundaries
-//    ASSERT_EQ(my_str_erase(&string1, 13, 14), RANGE_ERR);
-//    ASSERT_EQ(my_str_erase(&string1, 1, 0), RANGE_ERR);
-//
-//    // string is NULL
-//    ASSERT_EQ(my_str_erase(nullptr, 0, 1), NULL_PTR_ERR);
-//
-//    // beg == end
-//    ASSERT_EQ(my_str_erase(&string1, 1, 1), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "llo");
-//
-//    // from empty string
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_erase(&string1, 0, 10), 0);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "");
-//}
-//
+TEST_F(ClassDeclaration, my_str_insert) {
+    my_str_from_cstr(&string1, "herld", 20);
+    my_str_from_cstr(&string2, "llo, wo", 20);
 
-//TEST_F(ClassDeclaration, my_str_shrink_to_fit) {
+    // normal insert
+    int in_code = my_str_insert(&string1, &string2, 2);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_EQ(my_str_size(&string2), 7);
+
+    // insert at the end of the string
+    my_str_from_cstr(&string1, "hello, ", 20);
+    my_str_from_cstr(&string2, "world", 20);
+    in_code = my_str_insert(&string1, &string2, 7);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_EQ(my_str_size(&string2), 5);
+
+    // insert at the start of the string
+    my_str_from_cstr(&string1, "world", 20);
+    my_str_from_cstr(&string2, "hello, ", 20);
+    in_code = my_str_insert(&string1, &string2, 0);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_EQ(my_str_size(&string2), 7);
+
+    // insert in the empty string
+    my_str_clear(&string1);
+    my_str_from_cstr(&string2, "hello", 20);
+    in_code = my_str_insert(&string1, &string2, 0);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
+    ASSERT_EQ(my_str_size(&string1), 5);
+    ASSERT_EQ(my_str_size(&string2), 5);
+
+    // insert empty string
+    my_str_clear(&string2);
+    my_str_from_cstr(&string1, "hello", 20);
+    in_code = my_str_insert(&string1, &string2, 0);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
+    ASSERT_EQ(my_str_size(&string1), 5);
+    ASSERT_EQ(my_str_size(&string2), 0);
+
+    // insert with extending buffer
+    my_str_from_cstr(&string2, ", world", 0);
+    in_code = my_str_insert(&string2, &string1, 0);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "hello, world");
+    ASSERT_EQ(my_str_size(&string1), 5);
+    ASSERT_EQ(my_str_size(&string2), 12);
+
+    // one of strings is NULL
+    in_code = my_str_insert(nullptr, &string2, 0);
+    ASSERT_EQ(in_code, NULL_PTR_ERR);
+    in_code = my_str_insert(&string1, nullptr, 0);
+    ASSERT_EQ(in_code, NULL_PTR_ERR);
+
+    // bad position
+    in_code = my_str_insert(&string1, &string2, 20);
+    ASSERT_EQ(in_code, RANGE_ERR);
+}
+
+TEST_F(ClassDeclaration, my_str_insert_cstr) {
+    my_str_from_cstr(&string1, "herld", 20);
+
+    std::string c_string{"llo, wo"};
+    std::string c_string_long;
+
+    // normal insert
+    int in_code = my_str_insert_cstr(&string1, c_string.c_str(), 2);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_EQ(c_string.size(), 7);
+
+    // insert at the end of the string
+    my_str_from_cstr(&string1, "hello", 20);
+    c_string = ", world";
+    in_code = my_str_insert_cstr(&string1, c_string.c_str(), 5);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_EQ(c_string.size(), 7);
+
+    // insert at the start of the string
+    my_str_from_cstr(&string1, "world", 20);
+    c_string = "hello, ";
+    in_code = my_str_insert_cstr(&string1, c_string.c_str(), 0);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_EQ(c_string.size(), 7);
+
+    // insert in the empty string
+    my_str_clear(&string1);
+    c_string = "hello";
+    in_code = my_str_insert_cstr(&string1, c_string.c_str(), 0);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
+    ASSERT_EQ(my_str_size(&string1), 5);
+    ASSERT_EQ(c_string.size(), 5);
+
+    // insert empty string
+    c_string = "";
+    my_str_from_cstr(&string1, "hello", 20);
+    in_code = my_str_insert_cstr(&string1, c_string.c_str(), 0);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
+    ASSERT_EQ(my_str_size(&string1), 5);
+    ASSERT_EQ(c_string.size(), 0);
+
+    //insert with extending buffer
+    my_str_from_cstr(&string1, "hello, ", 20);
+    c_string_long = "world, how is it going? for me it is just a test";
+    in_code = my_str_insert_cstr(&string1, c_string_long.c_str(), 7);
+    ASSERT_EQ(in_code, 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world, how is it going? for me it is just a test");
+    ASSERT_EQ(my_str_size(&string1), 55);
+    ASSERT_EQ(c_string_long.size(), 48);
+
+    // one of strings is NULL
+    my_str_from_cstr(&string1, "hello", 20);
+    in_code = my_str_insert_cstr(nullptr, c_string.c_str(), 2);
+    ASSERT_EQ(in_code, NULL_PTR_ERR);
+    in_code = my_str_insert_cstr(&string1, nullptr, 2);
+    ASSERT_EQ(in_code, NULL_PTR_ERR);
+
+    // bad position
+    in_code = my_str_insert_cstr(&string1, c_string.c_str(), 20);
+    ASSERT_EQ(in_code, RANGE_ERR);
+}
+
+TEST_F(ClassDeclaration, my_str_append) {
+    my_str_from_cstr(&string1, "hello, ", 20);
+    my_str_from_cstr(&string2, "world", 20);
+
+    // normal append
+    ASSERT_EQ(my_str_append(&string1, &string2), 0);
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_STREQ(my_str_get_cstr(&string2), "world");
+
+    // append empty string
+    my_str_clear(&string2);
+    ASSERT_EQ(my_str_append(&string1, &string2), 0);
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+
+    // append to empty string
+    ASSERT_EQ(my_str_append(&string2, &string1), 0);
+    ASSERT_EQ(my_str_size(&string2), 12);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "hello, world");
+
+    // one of the strings is NULL
+    ASSERT_EQ(my_str_append(nullptr, &string1), NULL_PTR_ERR);
+    ASSERT_EQ(my_str_append(&string2, nullptr), NULL_PTR_ERR);
+
+    // append with extending buffer
+    my_str_from_cstr(&string1, "hello, ", 0);
+    my_str_from_cstr(&string2, "world, how is it going? for me it is just a test", 60);
+    ASSERT_EQ(my_str_append(&string1, &string2), 0);
+    ASSERT_EQ(my_str_size(&string1), 55);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world, how is it going? for me it is just a test");
+}
+
+TEST_F(ClassDeclaration, my_str_append_cstr) {
+    my_str_from_cstr(&string1, "hello, ", 20);
+    std::string c_string = "world";
+
+    // normal append
+    ASSERT_EQ(my_str_append_cstr(&string1, c_string.c_str()), 0);
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+    ASSERT_STREQ(c_string.c_str(), "world");
+
+    // append empty string
+    c_string = "";
+    ASSERT_EQ(my_str_append_cstr(&string1, c_string.c_str()), 0);
+    ASSERT_EQ(my_str_size(&string1), 12);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+
+    // append to empty string
+    c_string = "hello";
+    my_str_clear(&string1);
+    ASSERT_EQ(my_str_append_cstr(&string1, c_string.c_str()), 0);
+    ASSERT_EQ(my_str_size(&string2), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "");
+
+    // one of the strings is NULL
+    ASSERT_EQ(my_str_append_cstr(nullptr, c_string.c_str()), NULL_PTR_ERR);
+    ASSERT_EQ(my_str_append_cstr(&string2, nullptr), NULL_PTR_ERR);
+
+    // append with extending buffer
+    my_str_from_cstr(&string1, "hello, ", 0);
+    ASSERT_EQ(my_str_append_cstr(&string1, "world, how is it going? for me it is just a test"), 0);
+    ASSERT_EQ(my_str_size(&string1), 55);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world, how is it going? for me it is just a test");
+}
+
+TEST_F(ClassDeclaration, my_str_substr) {
+    my_str_from_cstr(&string1, "hello, world. My name is Myk0la and today I want to test your lab work!", 80);
+
+    // substring inside
+    ASSERT_EQ(my_str_substr(&string1, &string2, 2, 5), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "llo");
+    ASSERT_EQ(my_str_size(&string2), 3);
+
+    // substring from the start
+    ASSERT_EQ(my_str_substr(&string1, &string2, 0, 5), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "hello");
+    ASSERT_EQ(my_str_size(&string2), 5);
+
+    // substring to the end, within capacity
+    ASSERT_EQ(my_str_substr(&string1, &string2, 7, 75), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "world. My name is Myk0la and today I want to test your lab work!");
+    std::string s = "world. My name is Myk0la and today I want to test your lab work!";
+    ASSERT_EQ(my_str_size(&string2), s.size());
+
+    // bad boundaries
+    ASSERT_EQ(my_str_substr(&string1, &string2, 13, 11), RANGE_ERR);
+
+    // one of strings is NULL
+    ASSERT_EQ(my_str_substr(nullptr, &string2, 1, 2), NULL_PTR_ERR);
+    ASSERT_EQ(my_str_substr(&string1, nullptr, 1, 2), NULL_PTR_ERR);
+
+    // substring to end, more than capacity
+    ASSERT_EQ(my_str_substr(&string1, &string2, 7, 90), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "world. My name is Myk0la and today I want to test your lab work!");
+    s = "world. My name is Myk0la and today I want to test your lab work!";
+    ASSERT_EQ(my_str_size(&string2), s.size());
+
+    // substring from the punultimate position
+    ASSERT_EQ(my_str_substr(&string1, &string2, my_str_size(&string1) - 1, 90), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "!");
+    ASSERT_EQ(my_str_size(&string2), 1);
+
+    // beg == end
+    ASSERT_EQ(my_str_substr(&string1, &string2, 1, 1), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "");
+
+    // from empty string
+    my_str_clear(&string1);
+    ASSERT_EQ(my_str_substr(&string1, &string2, 0, 10), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "");
+}
+
+TEST_F(ClassDeclaration, my_str_substr_cstr) {
+
+    my_str_from_cstr(&string1, "hello, world", 20);
+    char c_string[20] = "";
+
+    // substring inside
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 2, 5), 0);
+    ASSERT_STREQ(c_string, "llo");
+
+    // substring from the start
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 0, 5), 0);
+    ASSERT_STREQ(c_string, "hello");
+
+    // substring to end, within capacity
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 7, 14), 0);
+    ASSERT_STREQ(c_string, "world");
+
+    // substring to end, greater than capacity
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 7, 25), 0);
+    ASSERT_STREQ(c_string, "world");
+
+
+    // bad boundaries
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 13, 11), RANGE_ERR);
+    ASSERT_EQ(my_str_size(&string1), 12);
+
+    // one ofthe  strings is NULL
+    ASSERT_EQ(my_str_substr_cstr(nullptr, c_string, 1, 2), NULL_PTR_ERR);
+    ASSERT_EQ(my_str_substr_cstr(&string1, nullptr, 1, 2), NULL_PTR_ERR);
+
+    // substring from penultimate position
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 11, 25), 0);
+    ASSERT_STREQ(c_string, "d");
+
+    // beg == end
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 1, 1), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "");
+
+    // from empty string
+    my_str_clear(&string1);
+    ASSERT_EQ(my_str_substr_cstr(&string1, c_string, 0, 10), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "");
+}
+
+TEST_F(ClassDeclaration, my_str_erase) {
+    my_str_from_cstr(&string1, "hello_world", 20);
+
+    // erase inside
+    ASSERT_EQ(my_str_erase(&string1, 5, 8), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hellorld");
+
+    // erase from the start
+    ASSERT_EQ(my_str_erase(&string1, 0, 2), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "llorld");
+
+    // erase to the end (out of bounds)
+    ASSERT_EQ(my_str_erase(&string1, 4, 20), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "llor");
+
+    // erase from the end
+    ASSERT_EQ(my_str_erase(&string1, 3, 6), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "llo");
+
+    // bad boundaries
+    ASSERT_EQ(my_str_erase(&string1, 13, 14), RANGE_ERR);
+    ASSERT_EQ(my_str_erase(&string1, 1, 0), RANGE_ERR);
+
+    // string is NULL
+    ASSERT_EQ(my_str_erase(nullptr, 0, 1), NULL_PTR_ERR);
+
+    // beg == end
+    ASSERT_EQ(my_str_erase(&string1, 1, 1), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "llo");
+
+    // from empty string
+    my_str_clear(&string1);
+    ASSERT_EQ(my_str_erase(&string1, 0, 10), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "");
+
+    // delete everything
+    my_str_from_cstr(&string1, "hello_world", 20);
+    ASSERT_EQ(my_str_erase(&string1, 0, 11), 0);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "");
+}
+
+
+TEST_F(ClassDeclaration, my_str_shrink_to_fit) {
 //    my_str_from_cstr(&string1, "hello, world", 20);
 //
 //    // normal shrink
@@ -820,8 +820,8 @@ TEST_F(ClassDeclaration, my_str_insert_c) {
 //
 //    // string is NULL
 //    ASSERT_EQ(my_str_shrink_to_fit(nullptr), NULL_PTR_ERR);
-//}
-//
+}
+
 //TEST_F(ClassDeclaration, my_str_resize) {
 //    my_str_from_cstr(&string1, "hello, world", 20);
 //
