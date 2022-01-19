@@ -20,7 +20,6 @@
 #pragma GCC diagnostic ignored "-Wformat-zero-length"
 #endif //_MSC_VER
 
-
 extern "C" {
 #include "c_string.h"
 }
@@ -31,10 +30,12 @@ extern "C" {
 
 namespace {
 //    typedef std::unique_ptr<FILE, int (*)(FILE *)> unique_file_ptr;
+    using unique_file_ptr = std::unique_ptr<FILE, int (*)(FILE *)>;
 
     class ClassDeclaration : public testing::Test {
     protected:
         ClassDeclaration() = default;
+
 
         my_str_t string1{};
         my_str_t string2{};
@@ -806,360 +807,436 @@ TEST_F(ClassDeclaration, my_str_erase) {
 
 
 TEST_F(ClassDeclaration, my_str_shrink_to_fit) {
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//
-//    // normal shrink
-//    ASSERT_EQ(my_str_shrink_to_fit(&string1), 0);
-//    ASSERT_EQ(my_str_capacity(&string1), my_str_size(&string1));
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
-//
-//    // shrink empty string
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_shrink_to_fit(&string1), 0);
-//    ASSERT_EQ(my_str_capacity(&string1), 0);
-//
-//    // string is NULL
-//    ASSERT_EQ(my_str_shrink_to_fit(nullptr), NULL_PTR_ERR);
+    my_str_from_cstr(&string1, "hello, world", 20);
+
+    // normal shrink
+    ASSERT_EQ(my_str_shrink_to_fit(&string1), 0);
+    ASSERT_EQ(my_str_capacity(&string1), my_str_size(&string1));
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world");
+
+    // shrink empty string
+    my_str_clear(&string1);
+    ASSERT_EQ(my_str_shrink_to_fit(&string1), 0);
+    ASSERT_EQ(my_str_capacity(&string1), 0);
+
+    // string is NULL
+    ASSERT_EQ(my_str_shrink_to_fit(nullptr), NULL_PTR_ERR);
 }
 
-//TEST_F(ClassDeclaration, my_str_resize) {
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//
-//    // bigger size without buffer extension
-//    ASSERT_EQ(my_str_resize(&string1, 17, '!'), 0);
-//    ASSERT_EQ(my_str_size(&string1), 17);
-//    ASSERT_EQ(my_str_capacity(&string1), 20);
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world!!!!!");
-//
-//    // bigger size with buffer extension
-//    ASSERT_EQ(my_str_resize(&string1, 21, '!'), 0);
-//    ASSERT_EQ(my_str_size(&string1), 21);
-//    ASSERT_GE(my_str_capacity(&string1), std::ceil(1.8f * 20));
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world!!!!!!!!!");
-//
-//    // smaller size
-//    ASSERT_EQ(my_str_resize(&string1, 5, 'a'), 0);
-//    ASSERT_EQ(my_str_size(&string1), 5);
-//    ASSERT_GE(my_str_capacity(&string1), std::ceil(1.8f * 20));
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
-//
-//    // size = 0
-//    ASSERT_EQ(my_str_resize(&string1, 0, 'a'), 0);
-//    ASSERT_EQ(my_str_size(&string1), 0);
-//    ASSERT_GE(my_str_capacity(&string1), std::ceil(1.8f * 20));
-//    ASSERT_STREQ(my_str_get_cstr(&string1), "");
-//
-//    // string is NULL
-//    ASSERT_EQ(my_str_resize(nullptr, 1, 'a'), NULL_PTR_ERR);
-//
-//    // resize newly created string
-//    ASSERT_EQ(my_str_resize(&string2, 2, 'a'), 0);
-//    ASSERT_EQ(my_str_size(&string2), 2);
-//    ASSERT_STREQ(my_str_get_cstr(&string2), "aa");
-//
-//    // if reserve max possible memory (buf and buf+1 support)
-//    size_t s = m_sizeAX;
+TEST_F(ClassDeclaration, my_str_resize) {
+    my_str_from_cstr(&string1, "hello, world", 20);
+
+    // bigger size without buffer extension
+    ASSERT_EQ(my_str_resize(&string1, 17, '!'), 0);
+    ASSERT_EQ(my_str_size(&string1), 17);
+    ASSERT_EQ(my_str_capacity(&string1), 20);
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world!!!!!");
+
+    // bigger size with buffer extension
+    ASSERT_EQ(my_str_resize(&string1, 21, '!'), 0);
+    ASSERT_EQ(my_str_size(&string1), 21);
+    ASSERT_GE(my_str_capacity(&string1), std::ceil(1.8f * 20));
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello, world!!!!!!!!!");
+
+    // smaller size
+    ASSERT_EQ(my_str_resize(&string1, 5, 'a'), 0);
+    ASSERT_EQ(my_str_size(&string1), 5);
+    ASSERT_GE(my_str_capacity(&string1), std::ceil(1.8f * 20));
+    ASSERT_STREQ(my_str_get_cstr(&string1), "hello");
+
+    // size = 0
+    ASSERT_EQ(my_str_resize(&string1, 0, 'a'), 0);
+    ASSERT_EQ(my_str_size(&string1), 0);
+    ASSERT_GE(my_str_capacity(&string1), std::ceil(1.8f * 20));
+    ASSERT_STREQ(my_str_get_cstr(&string1), "");
+
+    // string is NULL
+    ASSERT_EQ(my_str_resize(nullptr, 1, 'a'), NULL_PTR_ERR);
+
+    // resize newly created string
+    ASSERT_EQ(my_str_resize(&string2, 2, 'a'), 0);
+    ASSERT_EQ(my_str_size(&string2), 2);
+    ASSERT_STREQ(my_str_get_cstr(&string2), "aa");
+
+    // if reserve max possible memory (buf and buf+1 support)
+
+//    TODO: fix this, find out a normal test
+//    size_t s = SIZE_MAX;
 //    int errcode1 = my_str_resize(&string2, s, ' ');
 //    int errcode2 = my_str_resize(&string3, s, ' ');
 //    ASSERT_TRUE((errcode1 == MEMORY_ALLOCATION_ERR) || (errcode2 == MEMORY_ALLOCATION_ERR));
-//}
-//
-//TEST_F(ClassDeclaration, my_str_find) {
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//    my_str_from_cstr(&string2, "hello", 20);
-//
-//    // find, from 0 and substr exists
-//    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(0));
-//
-//    // find, from inside and substr exists
-//    my_str_from_cstr(&string2, "world", 20);
-//    ASSERT_EQ(my_str_find(&string1, &string2, 3), static_cast<size_t>(7));
-//
-//    // from 0, substr does not exist
-//    my_str_from_cstr(&string2, "hii", 20);
-//    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // from inside, substr does not exist
-//    my_str_from_cstr(&string2, "hii", 20);
-//    ASSERT_EQ(my_str_find(&string1, &string2, 3), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // find from end, does not exist
-//    my_str_from_cstr(&string2, "world", 20);
-//    ASSERT_EQ(my_str_find(&string1, &string2, my_str_size(&string1) - 1), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // one of the strings is null
-//    ASSERT_EQ(my_str_find(nullptr, &string2, 3), static_cast<size_t>(NULL_PTR_ERR));
-//    ASSERT_EQ(my_str_find(&string1, nullptr, 3), static_cast<size_t>(NULL_PTR_ERR));
-//
-//    // tofind is larger
-//    my_str_from_cstr(&string2, "hello, world!", 20);
-//    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // tofind is empty
-//    my_str_from_cstr(&string2, "", 20);
-//    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // from is out of bounds
-//    my_str_from_cstr(&string2, "hello", 20);
-//    ASSERT_EQ(my_str_find(&string1, &string2, 19), static_cast<size_t>(NOT_FOUND_CODE));
-//}
-//
-//TEST_F(ClassDeclaration, my_str_cmp) {
-//    // equal size normal strings
-//    my_str_from_cstr(&string1, "hello", 20);
-//    my_str_from_cstr(&string2, "hellw", 20);
-//    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
-//    ASSERT_EQ(my_str_cmp(&string2, &string1), 1);
-//
-//    // one is longer
-//    my_str_from_cstr(&string1, "aaba", 20);
-//    my_str_from_cstr(&string2, "aab", 20);
-//    ASSERT_EQ(my_str_cmp(&string2, &string1), -1);
-//    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
-//
-//    // single symbol strings
-//    my_str_from_cstr(&string1, "b", 20);
-//    my_str_from_cstr(&string2, "a", 20);
-//    ASSERT_EQ(my_str_cmp(&string2, &string1), -1);
-//    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
-//
-//    // one is empty
-//    my_str_from_cstr(&string1, "", 20);
-//    my_str_from_cstr(&string2, "a", 20);
-//    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
-//    ASSERT_EQ(my_str_cmp(&string2, &string1), 1);
-//
-//    // equal
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//    my_str_from_cstr(&string2, "hello, world", 20);
-//    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
-//
-//    // empty and equal
-//    my_str_from_cstr(&string1, "", 20);
-//    my_str_from_cstr(&string2, "", 20);
-//    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
-//
-//    // all NULL equalities
-////    TODO: check if it should be NULL_PTR_ERR or equality
-//    ASSERT_EQ(my_str_cmp(nullptr, nullptr), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_cmp(nullptr, &string1), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_cmp(&string1, nullptr), NULL_PTR_ERR);
-//
-//    // NULL inequalities
-//    my_str_from_cstr(&string1, "a", 20);
-//    ASSERT_EQ(my_str_cmp(nullptr, &string1), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_cmp(&string1, nullptr), NULL_PTR_ERR);
-//}
-//
-//TEST_F(ClassDeclaration, my_str_cmp_cstr) {
-//    // equal size normal strings
-//    char lt_cstr[20] = "hella";
-//    char gt_cstr[20] = "hellw";
-//
-//    my_str_from_cstr(&string1, "hello", 20);
-//    ASSERT_LT(my_str_cmp_cstr(&string1, gt_cstr), 0);
-//    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
-//
-//    // one is longer
-//    sprintf(lt_cstr, "aa");
-//    sprintf(gt_cstr, "aaba");
-//    my_str_from_cstr(&string1, "aab", 20);
-//    ASSERT_LT(my_str_cmp_cstr(&string1, gt_cstr), 0);
-//    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
-//
-//    // single symbol strings
-//    sprintf(lt_cstr, "a");
-//    sprintf(gt_cstr, "c");
-//    my_str_from_cstr(&string1, "b", 20);
-//    ASSERT_LT(my_str_cmp_cstr(&string1, gt_cstr), 0);
-//    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
-//
-//    // one is empty
-//    sprintf(lt_cstr, "");
-//    sprintf(gt_cstr, "b");
-//    my_str_from_cstr(&string2, "", 20);
-//    my_str_from_cstr(&string1, "b", 20);
-//    ASSERT_LT(my_str_cmp_cstr(&string2, gt_cstr), 0);
-//    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
-//
-//    // equal
-//    sprintf(lt_cstr, "hello, world");
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//    ASSERT_EQ(my_str_cmp_cstr(&string1, lt_cstr), 0);
-//
-//    // empty and equal
-//    sprintf(lt_cstr, "");
-//    my_str_from_cstr(&string1, "", 20);
-//    ASSERT_EQ(my_str_cmp_cstr(&string1, lt_cstr), 0);
-//
-//    // all NULL equalities
-//    ASSERT_EQ(my_str_cmp_cstr(&string1, nullptr), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_cmp_cstr(nullptr, lt_cstr), NULL_PTR_ERR);
-//
-//    // NULL inequalities
-//    sprintf(gt_cstr, "a");
-//    my_str_from_cstr(&string1, "a", 20);
-//    ASSERT_EQ(my_str_cmp_cstr(nullptr, gt_cstr), NULL_PTR_ERR);
-//    ASSERT_EQ(my_str_cmp_cstr(&string1, nullptr), NULL_PTR_ERR);
-//}
-//
-//TEST_F(ClassDeclaration, my_str_find_c) {
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//
-//    // find from 0
-//    ASSERT_EQ(my_str_find_c(&string1, 'e', 0), static_cast<size_t>(1));
-//
-//    // find from inside
-//    ASSERT_EQ(my_str_find_c(&string1, 'l', 3), static_cast<size_t>(3));
-//
-//    // miss from 0
-//    ASSERT_EQ(my_str_find_c(&string1, 'i', 0), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // miss inside
-//    ASSERT_EQ(my_str_find_c(&string1, 'm', 5), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // find from last symbol
-//    ASSERT_EQ(my_str_find_c(&string1, 'd', 11), static_cast<size_t>(11));
-//
-//    // bad from
-//    ASSERT_EQ(my_str_find_c(&string1, 'd', 12), static_cast<size_t>(NOT_FOUND_CODE));
-//    ASSERT_EQ(my_str_find_c(&string1, 'd', 13), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    //string is NULL
-//    ASSERT_EQ(my_str_find_c(nullptr, 'd', 10), static_cast<size_t>(NULL_PTR_ERR));
-//}
+}
 
-//static inline int equal_l(int symbol) {
-//    return symbol == 'l';
-//}
-//
-//static inline int equal_s(int symbol) {
-//    return symbol == 's';
-//}
-//
-//static inline int equal_d(int symbol) {
-//    return symbol == 'd';
-//}
-//
-//static inline int gt_5(int symbol) {
-//    return symbol > '5';
-//}
-//
-//static inline int true_predicate(int) {
-//    return 1;
-//}
+TEST_F(ClassDeclaration, my_str_find) {
+    my_str_from_cstr(&string1, "hello, world", 20);
+    my_str_from_cstr(&string2, "hello", 20);
 
-//TEST_F(ClassDeclaration, my_str_find_if) {
-//    my_str_from_cstr(&string1, "hello, world", 20);
-//    my_str_from_cstr(&string2, "123987456", 20);
+    // find, from 0 and substr exists
+    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(0));
+
+    // find, from inside and substr exists
+    my_str_from_cstr(&string2, "world", 20);
+    ASSERT_EQ(my_str_find(&string1, &string2, 3), static_cast<size_t>(7));
+
+    // from 0, substr does not exist
+    my_str_from_cstr(&string2, "hii", 20);
+    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(SIZE_MAX));
+
+    // from inside, substr does not exist
+    my_str_from_cstr(&string2, "hii", 20);
+    ASSERT_EQ(my_str_find(&string1, &string2, 3), static_cast<size_t>(SIZE_MAX));
+
+    // find from end, does not exist
+    my_str_from_cstr(&string2, "world", 20);
+    ASSERT_EQ(my_str_find(&string1, &string2, my_str_size(&string1) - 1), static_cast<size_t>(SIZE_MAX));
+
+    // one of the strings is null
+    ASSERT_EQ(my_str_find(nullptr, &string2, 3), static_cast<size_t>(SIZE_MAX));
+    ASSERT_EQ(my_str_find(&string1, nullptr, 3), static_cast<size_t>(SIZE_MAX));
+
+    // tofind is larger
+    my_str_from_cstr(&string2, "hello, world!", 20);
+    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(SIZE_MAX));
+
+    // tofind is empty
+    my_str_from_cstr(&string2, "", 20);
+    ASSERT_EQ(my_str_find(&string1, &string2, 0), static_cast<size_t>(SIZE_MAX));
+
+    // from is out of bounds
+    my_str_from_cstr(&string2, "hello", 20);
+    ASSERT_EQ(my_str_find(&string1, &string2, 19), static_cast<size_t>(SIZE_MAX));
+}
+
+TEST_F(ClassDeclaration, my_str_cmp) {
+    // equal size normal strings
+    my_str_from_cstr(&string1, "hello", 20);
+    my_str_from_cstr(&string2, "hellw", 20);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
+    ASSERT_EQ(my_str_cmp(&string2, &string1), 1);
+
+    // one is longer
+    my_str_from_cstr(&string1, "aaba", 20);
+    my_str_from_cstr(&string2, "aab", 20);
+    ASSERT_EQ(my_str_cmp(&string2, &string1), -1);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
+
+    // single symbol strings
+    my_str_from_cstr(&string1, "b", 20);
+    my_str_from_cstr(&string2, "a", 20);
+    ASSERT_EQ(my_str_cmp(&string2, &string1), -1);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 1);
+
+    // one is empty
+    my_str_from_cstr(&string1, "", 20);
+    my_str_from_cstr(&string2, "a", 20);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), -1);
+    ASSERT_EQ(my_str_cmp(&string2, &string1), 1);
+
+    // equal
+    my_str_from_cstr(&string1, "hello, world", 20);
+    my_str_from_cstr(&string2, "hello, world", 20);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
+
+    // empty and equal
+    my_str_from_cstr(&string1, "", 20);
+    my_str_from_cstr(&string2, "", 20);
+    ASSERT_EQ(my_str_cmp(&string1, &string2), 0);
+
+    // all NULL equalities
+
+    ASSERT_EQ(my_str_cmp(nullptr, nullptr), 0);
+    ASSERT_EQ(my_str_cmp(nullptr, &string1), 0);
+    ASSERT_EQ(my_str_cmp(&string1, nullptr), 0);
+
+    // NULL inequalities
+    my_str_from_cstr(&string1, "a", 20);
+    ASSERT_EQ(my_str_cmp(nullptr, &string1), -1);
+    ASSERT_EQ(my_str_cmp(&string1, nullptr), 1);
+}
+
+TEST_F(ClassDeclaration, my_str_cmp_cstr) {
+    // equal size normal strings
+    char lt_cstr[20] = "hella";
+    char gt_cstr[20] = "hellw";
+
+    my_str_from_cstr(&string1, "hello", 20);
+    ASSERT_LT(my_str_cmp_cstr(&string1, gt_cstr), 0);
+    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
+
+    // one is longer
+    sprintf(lt_cstr, "aa");
+    sprintf(gt_cstr, "aaba");
+    my_str_from_cstr(&string1, "aab", 20);
+    ASSERT_LT(my_str_cmp_cstr(&string1, gt_cstr), 0);
+    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
+
+    // single symbol strings
+    sprintf(lt_cstr, "a");
+    sprintf(gt_cstr, "c");
+    my_str_from_cstr(&string1, "b", 20);
+    ASSERT_LT(my_str_cmp_cstr(&string1, gt_cstr), 0);
+    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
+
+    // one is empty
+    sprintf(lt_cstr, "");
+    sprintf(gt_cstr, "b");
+    my_str_from_cstr(&string2, "", 20);
+    my_str_from_cstr(&string1, "b", 20);
+    ASSERT_LT(my_str_cmp_cstr(&string2, gt_cstr), 0);
+    ASSERT_GT(my_str_cmp_cstr(&string1, lt_cstr), 0);
+
+    // equal
+    sprintf(lt_cstr, "hello, world");
+    my_str_from_cstr(&string1, "hello, world", 20);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, lt_cstr), 0);
+
+    // empty and equal
+    sprintf(lt_cstr, "");
+    my_str_from_cstr(&string1, "", 20);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, lt_cstr), 0);
+
+    // all NULL equalities
+    ASSERT_EQ(my_str_cmp_cstr(&string1, nullptr), 0);
+    ASSERT_EQ(my_str_cmp_cstr(nullptr, lt_cstr), 0);
+
+    // NULL inequalities
+    sprintf(gt_cstr, "a");
+    my_str_from_cstr(&string1, "a", 20);
+    ASSERT_EQ(my_str_cmp_cstr(nullptr, gt_cstr), -1);
+    ASSERT_EQ(my_str_cmp_cstr(&string1, nullptr), 1);
+}
+
+TEST_F(ClassDeclaration, my_str_find_c) {
+    my_str_from_cstr(&string1, "hello, world", 20);
+
+    // find from 0
+    ASSERT_EQ(my_str_find_c(&string1, 'e', 0), static_cast<size_t>(1));
+
+    // find from inside
+    ASSERT_EQ(my_str_find_c(&string1, 'l', 3), static_cast<size_t>(3));
+
+    // miss from 0
+    ASSERT_EQ(my_str_find_c(&string1, 'i', 0), static_cast<size_t>(SIZE_MAX));
+
+    // miss inside
+    ASSERT_EQ(my_str_find_c(&string1, 'm', 5), static_cast<size_t>(SIZE_MAX));
+
+    // find from last symbol
+    ASSERT_EQ(my_str_find_c(&string1, 'd', 11), static_cast<size_t>(11));
+
+    // bad from
+    ASSERT_EQ(my_str_find_c(&string1, 'd', 12), static_cast<size_t>(SIZE_MAX));
+    ASSERT_EQ(my_str_find_c(&string1, 'd', 13), static_cast<size_t>(SIZE_MAX));
+
+    //string is NULL
+    ASSERT_EQ(my_str_find_c(nullptr, 'd', 10), static_cast<size_t>(SIZE_MAX));
+}
+
+
+// predicates for find_if
+static inline int equal_l(int symbol) {
+    return symbol == 'l';
+}
+
+static inline int equal_s(int symbol) {
+    return symbol == 's';
+}
+
+static inline int equal_d(int symbol) {
+    return symbol == 'd';
+}
+
+static inline int gt_5(int symbol) {
+    return symbol > '5';
+}
+
+static inline int true_predicate(int) {
+    return 1;
+}
+
+TEST_F(ClassDeclaration, my_str_find_if) {
+    my_str_from_cstr(&string1, "hello, world", 20);
+    my_str_from_cstr(&string2, "123987456", 20);
+
+    // find from 0
+    ASSERT_EQ(my_str_find_if(&string1, 0, equal_l), static_cast<size_t>(2));
+
+    // find inside
+    ASSERT_EQ(my_str_find_if(&string1, 3, equal_l), static_cast<size_t>(3));
+
+    // miss from 0
+    ASSERT_EQ(my_str_find_if(&string1, 0, equal_s), SIZE_MAX);
+
+    // miss inside
+    ASSERT_EQ(my_str_find_if(&string1, 6, equal_s), SIZE_MAX);
+
+    // find from last symbol
+    ASSERT_EQ(my_str_find_if(&string1, 11, equal_d), static_cast<size_t>(11));
+
+    // invalid from
+    ASSERT_EQ(my_str_find_if(&string1, 12, equal_d), SIZE_MAX);
+    ASSERT_EQ(my_str_find_if(&string1, 13, true_predicate), SIZE_MAX);
+
+    // one of the arguments is NULL
+    ASSERT_EQ(my_str_find_if(nullptr, 0, true_predicate), SIZE_MAX);
+    ASSERT_EQ(my_str_find_if(&string1, 0, nullptr), SIZE_MAX);
+
+    // empty string
+    my_str_clear(&string1);
+    ASSERT_EQ(my_str_find_if(&string1, 0, true_predicate), SIZE_MAX);
+
+    // more complex predicate
+    ASSERT_EQ(my_str_find_if(&string2, 0, gt_5), static_cast<size_t>(3));
+}
+
+static inline unique_file_ptr smart_fopen(const char *filename, const char *mode) {
+    return unique_file_ptr{fopen(filename, mode), fclose};
+}
+
+static inline std::string test_read_file(const char *c_str_path) {
+    std::ifstream in{c_str_path};
+    if (in.is_open() && in.good()) {
+        std::ostringstream ss{};
+        ss << in.rdbuf();
+        return ss.str();
+    } else throw std::runtime_error("Unable to read file");
+}
+
+static inline void test_write_file(const char *c_str_path, std::string &&content) {
+    std::ofstream out{c_str_path, std::ios::trunc};
+    if (out.is_open() && out.good()) {
+        out << content;
+    } else throw std::runtime_error("Unable to write to file");
+}
+
+TEST_F(ClassDeclaration, my_str_write_file) {
+    my_str_from_cstr(&string1, "hello, \nworld", 20);
+    char path_to_wfile[500];
+    sprintf(path_to_wfile, "%s%s", FILE_DIR, "/write_file.txt");
+    std::string read_content;
+
+    try {
+        // normal write to file
+        // !FILE_DIR is located in SOURCE_DIR/google_tests/test_files!
+        {
+            auto file = smart_fopen(path_to_wfile, "w");
+            if (file) {
+                ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
+            } else throw std::runtime_error("Unable to write to file");
+        }
+
+        // now read and check content of file
+        read_content = test_read_file(path_to_wfile);
+        ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
+        ASSERT_EQ(my_str_size(&string1), read_content.length());
+
+
+        // bad file stream
+        {
+            auto file = smart_fopen(path_to_wfile, "r");
+            if (file) {
+                ASSERT_EQ(my_str_write_file(&string1, file.get()), IO_WRITE_ERR);
+            } else throw std::runtime_error("Unable to write to file");
+        }
+
+        // write empty string
+        my_str_clear(&string1);
+        {
+            auto file = smart_fopen(path_to_wfile, "w");
+            if (file) {
+                ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
+            } else throw std::runtime_error("Unable to write to file");
+        }
+
+        // now read and check content of file
+        read_content = test_read_file(path_to_wfile);
+        ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
+        ASSERT_EQ(0, read_content.length());
+        ASSERT_STREQ("", read_content.c_str());
+
+        // one of the arguments is NULL
+        {
+            auto file = smart_fopen(path_to_wfile, "w");
+            if (file) {
+                ASSERT_EQ(my_str_write_file(nullptr, file.get()), NULL_PTR_ERR);
+                ASSERT_EQ(my_str_write_file(&string1, nullptr), NULL_PTR_ERR);
+            } else throw std::runtime_error("Unable to write to file");
+        }
+    } catch (const std::runtime_error &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+TEST_F(ClassDeclaration, my_str_write) {
+    testing::internal::CaptureStdout();
+
+    // normal string
+    my_str_from_cstr(&string1, "hello, world!", 20);
+    ASSERT_EQ(my_str_write(&string1), 0);
+    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "hello, world!");
+
+    testing::internal::CaptureStdout();
+    // empty string
+    my_str_clear(&string1);
+    ASSERT_EQ(my_str_write(&string1), 0);
+    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "");
+
+    testing::internal::CaptureStdout();
+    // string with \n
+    my_str_from_cstr(&string1, "hello, \nworld", 20);
+    ASSERT_EQ(my_str_write(&string1), 0);
+    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "hello, \nworld");
+
+    // string is null
+    ASSERT_EQ(my_str_write(nullptr), NULL_PTR_ERR);
+}
+
+//TEST_F(ClassDeclaration, my_str_read_file) {
 //
-//    // find from 0
-//    ASSERT_EQ(my_str_find_if(&string1, 0, equal_l), static_cast<size_t>(2));
+//    my_str_from_cstr(&string1, "hello, \nworld", 20);
+//    char path_to_rfile[500];
+//    sprintf(path_to_rfile, "%s%s", FILE_DIR, "/read_file.txt");
+//    test_write_file(path_to_rfile, std::string{"hello, \nworld"});
 //
-//    // find inside
-//    ASSERT_EQ(my_str_find_if(&string1, 3, equal_l), static_cast<size_t>(3));
+//    // normal read
+//    // !FILE_DIR is located in SOURCE_DIR/google_tests/test_files!
+//    {
+//        auto file = smart_fopen(path_to_rfile, "r");
+//        if (file) {
+//            ASSERT_EQ(my_str_read_file(&string2, file.get()), 0);
+//        } else throw std::runtime_error("Unable to read file");
+//        ASSERT_STREQ(my_str_get_cstr(&string1), my_str_get_cstr(&string2));
+//        ASSERT_EQ(my_str_size(&string1), my_str_size(&string2));
+//    }
 //
-//    // miss from 0
-//    ASSERT_EQ(my_str_find_if(&string1, 0, equal_s), static_cast<size_t>(NOT_FOUND_CODE));
+//    // read from empty file
+//    test_write_file(path_to_rfile, std::string{});
+//    {
+//        auto file = smart_fopen(path_to_rfile, "r");
+//        if (file) {
+//            ASSERT_EQ(my_str_read_file(&string2, file.get()), 0);
+//        } else throw std::runtime_error("Unable to read file");
+//        ASSERT_STREQ(my_str_get_cstr(&string2), "");
+//        ASSERT_EQ(my_str_size(&string2), 0);
+//    }
 //
-//    // miss inside
-//    ASSERT_EQ(my_str_find_if(&string1, 6, equal_s), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // find from last symbol
-//    ASSERT_EQ(my_str_find_if(&string1, 11, equal_d), static_cast<size_t>(11));
-//
-//    // invalid from
-//    ASSERT_EQ(my_str_find_if(&string1, 12, equal_d), static_cast<size_t>(NOT_FOUND_CODE));
-//    ASSERT_EQ(my_str_find_if(&string1, 13, true_predicate), static_cast<size_t>(NOT_FOUND_CODE));
+//    // bad stream
+//    {
+//        auto file = smart_fopen(path_to_rfile, "w");
+//        if (file) {
+//            ASSERT_EQ(my_str_read_file(&string2, file.get()), IO_READ_ERR);
+//        } else throw std::runtime_error("Unable to read file");
+//    }
 //
 //    // one of the arguments is NULL
-//    ASSERT_EQ(my_str_find_if(nullptr, 0, true_predicate), static_cast<size_t>(NULL_PTR_ERR));
-//    ASSERT_EQ(my_str_find_if(&string1, 0, nullptr), static_cast<size_t>(NULL_PTR_ERR));
-//
-//    // empty string
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_find_if(&string1, 0, true_predicate), static_cast<size_t>(NOT_FOUND_CODE));
-//
-//    // more complex predicate
-//    ASSERT_EQ(my_str_find_if(&string2, 0, gt_5), static_cast<size_t>(3));
-//}
-
-//static inline unique_file_ptr smart_fopen(const char *filename, const char *mode) {
-//    return unique_file_ptr{fopen(filename, mode), fclose};
-//}
-
-//static inline std::string test_read_file(const char *c_str_path) {
-//    std::ifstream in{c_str_path};
-//    if (in.is_open() && in.good()) {
-//        std::ostringstream ss{};
-//        ss << in.rdbuf();
-//        return ss.str();
-//    } else throw std::runtime_error("Unable to read file");
-//}
-
-//static inline void test_write_file(const char *c_str_path, std::string &&content) {
-//    std::ofstream out{c_str_path, std::ios::trunc};
-//    if (out.is_open() && out.good()) {
-//        out << content;
-//    } else throw std::runtime_error("Unable to write to file");
-//}
-
-//TEST_F(ClassDeclaration, my_str_write_file) {
-//    my_str_from_cstr(&string1, "hello, \nworld", 20);
-//    char path_to_wfile[500];
-//    sprintf(path_to_wfile, "%s%s", FILE_DIR, "/write_file.txt");
-//    std::string read_content;
-//
-//    try {
-//        // normal write to file
-//        // !FILE_DIR is located in SOURCE_DIR/google_tests/test_files!
-//        {
-//            auto file = smart_fopen(path_to_wfile, "w");
-//            if (file) {
-//                ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
-//            } else throw std::runtime_error("Unable to write to file");
-//        }
-//
-//        // now read and check content of file
-//        read_content = test_read_file(path_to_wfile);
-//        ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
-//        ASSERT_EQ(my_str_size(&string1), read_content.length());
-//
-//
-//        // bad file stream
-//        {
-//            auto file = smart_fopen(path_to_wfile, "r");
-//            if (file) {
-//                ASSERT_EQ(my_str_write_file(&string1, file.get()), IO_WRITE_ERR);
-//            } else throw std::runtime_error("Unable to write to file");
-//        }
-//
-//        // write empty string
-//        my_str_clear(&string1);
-//        {
-//            auto file = smart_fopen(path_to_wfile, "w");
-//            if (file) {
-//                ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
-//            } else throw std::runtime_error("Unable to write to file");
-//        }
-//
-//        // now read and check content of file
-//        read_content = test_read_file(path_to_wfile);
-//        ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
-//        ASSERT_EQ(0, read_content.length());
-//        ASSERT_STREQ("", read_content.c_str());
-//
-//        // one of the arguments is NULL
-//        {
-//            auto file = smart_fopen(path_to_wfile, "w");
-//            if (file) {
-//                ASSERT_EQ(my_str_write_file(nullptr, file.get()), NULL_PTR_ERR);
-//                ASSERT_EQ(my_str_write_file(&string1, nullptr), NULL_PTR_ERR);
-//            } else throw std::runtime_error("Unable to write to file");
-//        }
-//    } catch (const std::runtime_error &e) {
-//        std::cerr << e.what() << std::endl;
+//    {
+//        auto file = smart_fopen(path_to_rfile, "r");
+//        if (file) {
+//            ASSERT_EQ(my_str_read_file(nullptr, file.get()), NULL_PTR_ERR);
+//            ASSERT_EQ(my_str_read_file(&string2, nullptr), NULL_PTR_ERR);
+//        } else throw std::runtime_error("Unable to read file");
 //    }
+//
 //}
 
 //TEST_F(ClassDeclaration, my_str_read_file) {
@@ -1273,81 +1350,6 @@ TEST_F(ClassDeclaration, my_str_shrink_to_fit) {
 //
 //    // string is  NULL
 //    ASSERT_EQ(my_str_read(NULL), NULL_PTR_ERR);
-//}
-
-//TEST_F(ClassDeclaration, my_str_write) {
-//    testing::internal::CaptureStdout();
-//
-//    // normal string
-//    my_str_from_cstr(&string1, "hello, world!", 20);
-//    ASSERT_EQ(my_str_write(&string1), 0);
-//    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "hello, world!");
-//
-//    testing::internal::CaptureStdout();
-//    // empty string
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_write(&string1), 0);
-//    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "");
-//
-//    testing::internal::CaptureStdout();
-//    // string with \n
-//    my_str_from_cstr(&string1, "hello, \nworld", 20);
-//    ASSERT_EQ(my_str_write(&string1), 0);
-//    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "hello, \nworld");
-//
-//    // string is null
-//    ASSERT_EQ(my_str_write(NULL), NULL_PTR_ERR);
-//}
-
-// TODO: check next tests!
-//TEST_F(ClassDeclaration, my_str_read_file) {
-//    try {
-//        my_str_from_cstr(&string1, "hello, \nworld", 20);
-//        char path_to_rfile[500];
-//        sprintf(path_to_rfile, "%s%s", FILE_DIR, "/read_file.txt");
-//        test_write_file(path_to_rfile, std::string{"hello, \nworld"});
-//
-//        // normal read
-//        // !FILE_DIR is located in SOURCE_DIR/google_tests/test_files!
-//        {
-//            auto file = smart_fopen(path_to_rfile, "r");
-//            if (file) {
-//                ASSERT_EQ(my_str_read_file(&string2, file.get()), 0);
-//            } else throw std::runtime_error("Unable to read file");
-//            ASSERT_STREQ(my_str_get_cstr(&string1), my_str_get_cstr(&string2));
-//            ASSERT_EQ(my_str_size(&string1), my_str_size(&string2));
-//        }
-//
-//        // read from empty file
-//        test_write_file(path_to_rfile, std::string{});
-//        {
-//            auto file = smart_fopen(path_to_rfile, "r");
-//            if (file) {
-//                ASSERT_EQ(my_str_read_file(&string2, file.get()), 0);
-//            } else throw std::runtime_error("Unable to read file");
-//            ASSERT_STREQ(my_str_get_cstr(&string2), "");
-//            ASSERT_EQ(my_str_size(&string2), 0);
-//        }
-//
-//        // bad stream
-//        {
-//            auto file = smart_fopen(path_to_rfile, "w");
-//            if (file) {
-//                ASSERT_EQ(my_str_read_file(&string2, file.get()), IO_READ_ERR);
-//            } else throw std::runtime_error("Unable to read file");
-//        }
-//
-//        // one of the arguments is NULL
-//        {
-//            auto file = smart_fopen(path_to_rfile, "r");
-//            if (file) {
-//                ASSERT_EQ(my_str_read_file(nullptr, file.get()), NULL_PTR_ERR);
-//                ASSERT_EQ(my_str_read_file(&string2, nullptr), NULL_PTR_ERR);
-//            } else throw std::runtime_error("Unable to read file");
-//        }
-//    } catch (const std::runtime_error &e) {
-//        std::cerr << e.what() << std::endl;
-//    }
 //}
 
 //TEST_F(ClassDeclaration, my_str_read_file_HUGE) {
@@ -1498,29 +1500,6 @@ TEST_F(ClassDeclaration, my_str_shrink_to_fit) {
 //    }
 //}
 //
-//TEST_F(ClassDeclaration, my_str_write) {
-//    testing::internal::CaptureStdout();
-//
-//    // normal string
-//    my_str_from_cstr(&string1, "hello, world!", 20);
-//    ASSERT_EQ(my_str_write(&string1), 0);
-//    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "hello, world!");
-//
-//    testing::internal::CaptureStdout();
-//    // empty string
-//    my_str_clear(&string1);
-//    ASSERT_EQ(my_str_write(&string1), 0);
-//    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "");
-//
-//    testing::internal::CaptureStdout();
-//    // string with \n
-//    my_str_from_cstr(&string1, "hello, \nworld", 20);
-//    ASSERT_EQ(my_str_write(&string1), 0);
-//    ASSERT_STREQ(testing::internal::GetCapturedStdout().c_str(), "hello, \nworld");
-//
-//    // string is null
-//    ASSERT_EQ(my_str_write(nullptr), NULL_PTR_ERR);
-//}
 
 #ifndef _MSC_VER
 #pragma GCC diagnostic warning "-Wformat-zero-length"
