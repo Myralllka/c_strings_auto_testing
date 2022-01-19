@@ -3,7 +3,7 @@
 # clean up in case compilation process termination
 trap ctrl_c INT
 function ctrl_c() {
-	    rm -rf build bin
+	    rm -rf build
 }
 
 set -e
