@@ -1115,56 +1115,54 @@ TEST_F(ClassDeclaration, my_str_write_file) {
     sprintf(path_to_wfile, "%s%s", FILE_DIR, "/write_file.txt");
     std::string read_content;
 
-    try {
-        // normal write to file
-        // !FILE_DIR is located in SOURCE_DIR/google_tests/test_files!
-        {
-            auto file = smart_fopen(path_to_wfile, "w");
-            if (file) {
-                ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
-            } else throw std::runtime_error("Unable to write to file");
-        }
 
-        // now read and check content of file
-        read_content = test_read_file(path_to_wfile);
-        ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
-        ASSERT_EQ(my_str_size(&string1), read_content.length());
-
-
-        // bad file stream
-        {
-            auto file = smart_fopen(path_to_wfile, "r");
-            if (file) {
-                ASSERT_EQ(my_str_write_file(&string1, file.get()), IO_WRITE_ERR);
-            } else throw std::runtime_error("Unable to write to file");
-        }
-
-        // write empty string
-        my_str_clear(&string1);
-        {
-            auto file = smart_fopen(path_to_wfile, "w");
-            if (file) {
-                ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
-            } else throw std::runtime_error("Unable to write to file");
-        }
-
-        // now read and check content of file
-        read_content = test_read_file(path_to_wfile);
-        ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
-        ASSERT_EQ(0, read_content.length());
-        ASSERT_STREQ("", read_content.c_str());
-
-        // one of the arguments is NULL
-        {
-            auto file = smart_fopen(path_to_wfile, "w");
-            if (file) {
-                ASSERT_EQ(my_str_write_file(nullptr, file.get()), NULL_PTR_ERR);
-                ASSERT_EQ(my_str_write_file(&string1, nullptr), NULL_PTR_ERR);
-            } else throw std::runtime_error("Unable to write to file");
-        }
-    } catch (const std::runtime_error &e) {
-        std::cerr << e.what() << std::endl;
+    // normal write to file
+    // !FILE_DIR is located in SOURCE_DIR/google_tests/test_files!
+    {
+        auto file = smart_fopen(path_to_wfile, "w");
+        if (file) {
+            ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
+        } else throw std::runtime_error("Unable to write to file");
     }
+
+    // now read and check content of file
+    read_content = test_read_file(path_to_wfile);
+    ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
+    ASSERT_EQ(my_str_size(&string1), read_content.length());
+
+
+    // bad file stream
+    {
+        auto file = smart_fopen(path_to_wfile, "r");
+        if (file) {
+            ASSERT_EQ(my_str_write_file(&string1, file.get()), IO_WRITE_ERR);
+        } else throw std::runtime_error("Unable to write to file");
+    }
+
+    // write empty string
+    my_str_clear(&string1);
+    {
+        auto file = smart_fopen(path_to_wfile, "w");
+        if (file) {
+            ASSERT_EQ(my_str_write_file(&string1, file.get()), 0);
+        } else throw std::runtime_error("Unable to write to file");
+    }
+
+    // now read and check content of file
+    read_content = test_read_file(path_to_wfile);
+    ASSERT_STREQ(my_str_get_cstr(&string1), read_content.c_str());
+    ASSERT_EQ(0, read_content.length());
+    ASSERT_STREQ("", read_content.c_str());
+
+    // one of the arguments is NULL
+    {
+        auto file = smart_fopen(path_to_wfile, "w");
+        if (file) {
+            ASSERT_EQ(my_str_write_file(nullptr, file.get()), NULL_PTR_ERR);
+            ASSERT_EQ(my_str_write_file(&string1, nullptr), NULL_PTR_ERR);
+        } else throw std::runtime_error("Unable to write to file");
+    }
+
 }
 
 TEST_F(ClassDeclaration, my_str_write) {
