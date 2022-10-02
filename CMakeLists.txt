@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(CMAKE_C_COMPILER /usr/bin/gcc)
+set(CMAKE_CXX_COMPILER /usr/bin/g++)
 # CHANGE YOUR PROJECT NAME
 set(PROJECT_NAME c_string_tests)
 project(${PROJECT_NAME} C CXX)
@@ -54,8 +54,8 @@ add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src"
 # 2) build my_str library
 add_library(
         ${LIBN} SHARED
-        ${CMAKE_SOURCE_DIR}/c_str_lib/c_string.c
         ${CMAKE_SOURCE_DIR}/c_str_lib/c_string.h
+        ${CMAKE_SOURCE_DIR}/c_str_lib/c_string.cpp
 )
 target_include_directories(${LIBN} PUBLIC ${CMAKE_SOURCE_DIR}/c_str_lib)
 
