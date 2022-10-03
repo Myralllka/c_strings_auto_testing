@@ -56,9 +56,7 @@ TEST_F(ClassDeclaration, constructors) {
     ASSERT_NO_THROW(my_str_t(20, 'c'));
 
     // should assert 1 out of 2. TODO: rewrite to have one assert
-    ASSERT_ANY_THROW((my_str_t{std::numeric_limits<size_t>::max(), 'c'}));
-    ASSERT_ANY_THROW((my_str_t{std::numeric_limits<size_t>::max() - 1, 'c'}));
-
+    ASSERT_ANY_THROW((my_str_t{std::numeric_limits<size_t>::max()/100, 'c'}));
 }
 
 TEST_F(ClassDeclaration, cstring_constructor) {
